@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+
+  laravel-docker:
+    container_name: laravel-docker
+    restart: always
+    build: ./backend/
+    volumes:
+      - ./backend/:/usr/share/nginx/html
+    ports:
+      - 8000:80
+    networks:
+      - docker
+
+  mysql_database:
+    container_name: mysql_database
+    restart: always
+    image: mysql:latest
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/share:/home/share
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - docker
+
+  my_admin:
+    container_name: my_admin
+    restart: always
+    image: phpmyadmin:latest
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOSTS=mysql_database
+    networks:
+      - docker
+
+#Docker Networks
+networks:
+  docker:
+    driver: bridge
