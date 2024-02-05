@@ -1,0 +1,42 @@
+name: Backend_test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+     - main
+
+jobs:
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: docker-compose up -d
+        run: |
+          docker-compose up -d
+
+      - name: Copy .env.ci
+        run: |
+          docker exec laravel-docker cp .env.ci .env
+          
+      - name: Composer upgrade
+        run: |
+          docker exec laravel-docker composer update && docker exec laravel-docker composer upgrade && docker exec laravel-docker apt update && docker exec laravel-docker apt full-upgrade -y    
+
+      - name: Migrate Laravel
+        run: |
+          docker exec laravel-docker php artisan migrate --force
+
+      - name: Make database_test
+        run: |
+          docker exec laravel-docker cp .env.test .env && docker exec laravel-docker php artisan migrate --force && docker exec laravel-docker cp .env.ci .env
+
+      - name: Laravel test
+        run: |
+          docker exec laravel-docker php artisan test
