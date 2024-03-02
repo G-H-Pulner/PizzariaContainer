@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('produto', function (Blueprint $table) {
             $table->id();
+
+            $table->string('nome', 255);
+
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

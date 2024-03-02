@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('tamanho', function (Blueprint $table) {
             $table->id();
+
+            $table->string('nome', 255);
+            $table->float('tamanho_em_cm', 10, 2);
+            $table->float('preco_em_reais', 20, 2);
+
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 
