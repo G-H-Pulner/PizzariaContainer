@@ -2,19 +2,20 @@ version: '3.7'
 services:
 
   laravel-docker:
-    container_name: laravel-docker
-    restart: always
+    container_name: laravel-docker-pizzaria
+    restart: unless-stopped
     build: ./backend/
     volumes:
-      - ./backend/:/usr/share/nginx/html
+      - ./backend/:/var/www/html
+      - ./files/documentos:/home/files/documentos
     ports:
       - 8000:80
     networks:
       - docker
 
   mysql_database:
-    container_name: mysql_database
-    restart: always
+    container_name: mysql_database-pizzaria
+    restart: unless-stopped
     image: mysql:latest
     volumes:
       - ./database/data:/var/lib/mysql
@@ -27,8 +28,8 @@ services:
       - docker
 
   my_admin:
-    container_name: my_admin
-    restart: always
+    container_name: my_admin-pizzaria
+    restart: unless-stopped
     image: phpmyadmin:latest
     ports:
       - "8081:80"
